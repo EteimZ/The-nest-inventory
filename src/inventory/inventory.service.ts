@@ -19,11 +19,11 @@ export class InventoryService {
     private readonly userService: UsersService,
   ) {}
 
-  async getAllInventory(id: string): Promise<InventoryInterface[]> {
+  async getAllInventory({username}: UserDto): Promise<InventoryInterface[]> {
     const inventories = await this.inventoryRepo.find({
       where: {
         owner: {
-          id,
+          username,
         },
       },
       relations: ['owner'],
@@ -31,9 +31,9 @@ export class InventoryService {
     return inventories.map((inventory) => toInventoryInterface(inventory));
   }
 
-  async getOneInventory(id: string): Promise<InventoryInterface> {
+  async getOneInventory(id: string, {username}: UserDto): Promise<InventoryInterface> {
     const inventory = await this.inventoryRepo.findOne({
-      where: { id },
+      where: { id, owner: { username } },
       relations: ['owner'],
     });
     if (!inventory) {
@@ -43,10 +43,10 @@ export class InventoryService {
   }
 
   async createInventory(
-    id: string,
+    {username}: UserDto,
     createInventory: InventoryDto,
   ): Promise<InventoryInterface> {
-    const owner = await this.userService.findOne({ where: { id } });
+    const owner = await this.userService.findOne({ where: { username } });
     const inventory: InventoryEntity = await this.inventoryRepo.create({
       owner,
       ...createInventory,
@@ -58,11 +58,12 @@ export class InventoryService {
   }
 
   async updateInventory(
+    {username}: UserDto,
     id: string,
     inventoryDto: InventoryDto,
   ): Promise<InventoryInterface> {
     let inventory: InventoryEntity = await this.inventoryRepo.findOne({
-      where: { id },
+      where: { id, owner: { username } },
     });
 
     if (!inventory) {
@@ -79,9 +80,9 @@ export class InventoryService {
     return toInventoryInterface(inventory);
   }
 
-  async deleteInventory(id: string): Promise<InventoryInterface> {
+  async deleteInventory(id: string, {username}: UserDto): Promise<InventoryInterface> {
     const inventory: InventoryEntity = await this.inventoryRepo.findOne({
-      where: { id },
+      where: { id, owner: {username}},
       relations: ['owner'],
     });
 

@@ -1,10 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersController } from './users/users.controller';
-import { InventoryController } from './inventory/inventory.controller';
-import { InventoryService } from './inventory/inventory.service';
-import { UsersService } from './users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { InventoryModule } from './inventory/inventory.module';

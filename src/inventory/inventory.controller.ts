@@ -1,43 +1,55 @@
-import { Controller, Get, Post, Param, Put, Body, Delete} from '@nestjs/common';
+import { Controller, Get, Post, Param, Put, Body, Delete, Req, UseGuards} from '@nestjs/common';
 import { InventoryDto } from './dto/inventory-create.dto';
 import { InventoryService } from './inventory.service';
 import { InventoryInterface } from './interface/inventory.interface';
+import { UserDto } from 'src/users/dto/user.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 
 @Controller('inventory')
 export class InventoryController {
   constructor(private inventoryService: InventoryService) {}
   
-  @Get(':id')
-  async findAll(@Param('id') id: string): Promise<InventoryInterface[]> {
-    return await this.inventoryService.getAllInventory(id)  
+  @Get()
+  @UseGuards(AuthGuard())
+  async findAll(@Req() req: any): Promise<InventoryInterface[]> {
+    const user = req.user as UserDto;
+    return await this.inventoryService.getAllInventory(user);  
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<InventoryInterface> {
-    return await this.inventoryService.getOneInventory(id);
+  @UseGuards(AuthGuard())
+  async findOne(@Param('id') id: string, @Req() req: any): Promise<InventoryInterface> {
+    const user = req.user as UserDto;
+    return await this.inventoryService.getOneInventory(id, user);
   }
 
   // remove params later and get user from request object
-  @Post(':user')
+  @Post()
+  @UseGuards(AuthGuard())
   async create(
     @Body() inventoryDto: InventoryDto,
-    @Param('user') user: string
+    @Req() req: any
   ): Promise<InventoryInterface> {
+    const user = req.user as UserDto;
     return await this.inventoryService.createInventory(user, inventoryDto);
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard())
   async update(
     @Param('id') id: string,
     @Body() inventoryDto: InventoryDto,
+    @Req() req: any
   ): Promise<InventoryInterface> {
-    console.log("Hello world!");
-    return await this.inventoryService.updateInventory(id, inventoryDto)
+    const user = req.user as UserDto;
+    return await this.inventoryService.updateInventory(user, id, inventoryDto)
   }
 
   @Delete(':id')
-  async delete( @Param('id') id: string): Promise<InventoryInterface> {
-    return await this.inventoryService.deleteInventory(id);
+  @UseGuards(AuthGuard())
+  async delete( @Param('id') id: string, @Req() req: any): Promise<InventoryInterface> {
+    const user = req.user as UserDto;
+    return await this.inventoryService.deleteInventory(id, user);
   } 
 }
