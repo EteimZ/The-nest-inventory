@@ -24,7 +24,7 @@ export class InventoryDto {
   @IsNotEmpty()
   quantity: number
 
-  @ApiProperty({description: 'Owner of the inventory.'})
+  @ApiProperty({description: 'Owner\'s id of the inventory.'})
   @IsNotEmpty()
   owner: string
 
