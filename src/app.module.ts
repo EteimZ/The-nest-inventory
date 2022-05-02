@@ -9,12 +9,15 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
      TypeOrmModule.forRoot({
-      type: 'postgres',
+       type: 'postgres',
+/*       type: 'postgres',
       host: 'localhost',
       port: 5432,
       username: 'postgres',
       password: 'postgres',
-      database: 'inventory',
+      database: 'inventory', */
+      url: process.env.DATABASE_URL,
+      // url: 'postgres://postgres:postgres@localhost:5432/inventory',
       entities: [InventoryEntity, UserEntity],
       synchronize: true,
     }),  UsersModule, InventoryModule, AuthModule
