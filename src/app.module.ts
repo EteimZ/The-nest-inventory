@@ -17,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
       password: 'postgres',
       database: 'inventory', */
       url: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
       // url: 'postgres://postgres:postgres@localhost:5432/inventory',
       entities: [InventoryEntity, UserEntity],
       synchronize: true,
